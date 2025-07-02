@@ -3,25 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/19 13:46:37 by weast             #+#    #+#             */
-/*   Updated: 2025/03/19 15:40:28 by weast            ###   ########.fr       */
+/*   Created: 2025/06/18 12:43:24 by William           #+#    #+#             */
+/*   Updated: 2025/06/18 12:49:33 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "philosophers.h"
 
-int main(int argc, char *argv[])
+#include "philo.h"
+
+int	main(int ac, char **av)
 {
-	t_settings *settings;
 	t_table *sim;
-	settings = init_settings(argc, argv);
-	if (!settings)
-	{
-		ft_putstr_fd("Invalid input or memory allocation failiure\n", 0);
-		return 1;
-	}
-	sim = init_simulation_instance(settings);
-	print_settings(sim->settings);
-    return 0;
+	if (!(ac == 5 || ac == 6))
+		return (1);
+
+	sim = init_table(ac, av);
+	if (!sim)
+		return (1);
+
 }
