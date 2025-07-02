@@ -6,7 +6,7 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 19:36:24 by William           #+#    #+#             */
-/*   Updated: 2025/06/21 11:49:11 by William          ###   ########.fr       */
+/*   Updated: 2025/07/02 12:29:22 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	print_status(t_table *sim, int philo_id, char *status)
 {
 	pthread_mutex_lock(&sim->print_lock);
 	if (!sim->stop_simulation)
-		printf("%lld %d %s\n", get_current_time(), philo_id + 1, status);
+		printf("%lld %d %s\n", get_time(), philo_id + 1, status);
 	pthread_mutex_unlock(&sim->print_lock);
 }
 

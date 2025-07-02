@@ -6,23 +6,33 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 12:40:36 by William           #+#    #+#             */
-/*   Updated: 2025/06/18 12:45:08 by William          ###   ########.fr       */
+/*   Updated: 2025/07/02 11:54:46 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <pthread.h>
 
-void	destroy_table(t_table *sim)
+void destroy_table(t_table *sim)
 {
-	int	i;
+    int i;
 
-	i = 0;
-	while (i++ < sim->num_philosophers)
-		pthread_mutex_destroy(&sim->forks[i].mutex);
-	pthread_mutex_destroy(&sim->meal_lock);
-	pthread_mutex_destroy(&sim->print_lock);
-	free(sim->forks);
-	free(sim->philosophers);
-	/* free(sim); */
+    if (sim)
+    {
+        if (sim->forks)
+        {
+            for (i = 0; i < sim->num_philosophers; i++)
+            {
+                pthread_mutex_destroy(&sim->forks[i].mutex);
+            }
+            free(sim->forks);
+        }
+        if (sim->philosophers)
+        {
+            free(sim->philosophers);
+        }
+        pthread_mutex_destroy(&sim->meal_lock);
+        pthread_mutex_destroy(&sim->print_lock);
+        free(sim);
+    }
 }

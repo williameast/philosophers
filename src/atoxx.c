@@ -3,7 +3,7 @@
 static int	check_whitespace(char c)
 {
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v'
-		|| c == '\f')
+		|| c == '\f');
 }
 
 static int	check_ll_overflow(long long res, int sign)

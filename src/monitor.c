@@ -6,7 +6,7 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 08:43:03 by William           #+#    #+#             */
-/*   Updated: 2025/06/21 11:55:38 by William          ###   ########.fr       */
+/*   Updated: 2025/07/02 12:23:06 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,27 @@ void *monitor_routine(void *arg)
             if (!check_health(sim, id))
                 all_fed_enough = FALSE;
             id++;
+            usleep(CPU_DELAY_TIME / sim->num_philosophers);
         }
         if (all_fed_enough && sim->min_meals > 0)
         {
             sim->stop_simulation = TRUE;
             break;
         }
-        usleep(CPU_DELAY_TIME);
     }
     return NULL;
+}
+
+
+void init_monitor(t_table *sim)
+{
+    pthread_t monitor;
+
+    if (pthread_create(&monitor, NULL, monitor_routine, sim) != 0)
+    {
+        fprintf(stderr, "Failed to create monitor thread\n");
+        sim->stop_simulation = TRUE;
+    }
+    else
+        pthread_detach(monitor);
 }

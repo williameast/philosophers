@@ -6,7 +6,7 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 10:58:19 by William           #+#    #+#             */
-/*   Updated: 2025/06/21 11:50:54 by William          ###   ########.fr       */
+/*   Updated: 2025/07/02 12:23:02 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,13 @@ static void	init_philosophers(t_table *sim)
 	t_phil	*phil;
 
 	i = 0;
-	while (i++ < sim->num_philosophers)
+	while (i < sim->num_philosophers)
 	{
 		phil = &sim->philosophers[i];
-		phil->id = i;
+		phil->id = i + 1;
 		phil->last_meal_time = get_time();
 		phil->meals_consumed = 0;
+		i++;
 	}
 }
 
@@ -43,6 +44,8 @@ t_table	*init_table(int ac, char **av)
 	t_table	*sim;
 
 	sim = malloc(sizeof(t_table));
+	if (!sim)
+		return (NULL);
 	sim->num_philosophers = ft_atoi(av[1]);
 	sim->time_to_die = ft_atoll(av[2]);
 	sim->time_to_eat = ft_atoll(av[3]);
@@ -56,23 +59,13 @@ t_table	*init_table(int ac, char **av)
 	sim->forks = malloc(sizeof(t_fork) * sim->num_philosophers);
 	sim->philosophers = malloc(sizeof(t_phil) * sim->num_philosophers);
 	if (!sim->forks || !sim->philosophers)
+	{
+		destroy_table(sim);
 		return (NULL);
+	}
 	pthread_mutex_init(&sim->meal_lock, NULL);
 	pthread_mutex_init(&sim->print_lock, NULL);
 	init_philosophers(sim);
+	sim->stop_simulation = FALSE;
 	return (sim);
-}
-
-void	init_monitor(t_table sim)
-{
-	pthread_t monitor;
-	int i = 0;
-
-	while (i++ < sim.num_philosophers)
-	{
-		pthread_create(&monitor, NULL, monitor_routine, &sim);
-
-
-	}
-
 }

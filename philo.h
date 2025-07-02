@@ -6,7 +6,7 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 19:37:08 by William           #+#    #+#             */
-/*   Updated: 2025/06/21 12:03:18 by William          ###   ########.fr       */
+/*   Updated: 2025/07/02 12:46:25 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef PHILO_H
@@ -21,7 +21,7 @@
 
 // consts
 # define MAX_PHILOSOPHERS 300
-# define MIN_PHILOSOPHERS 300
+# define MIN_PHILOSOPHERS 0
 
 # define MAX_DIE 9999
 # define MIN_DIE 0
@@ -46,6 +46,10 @@
 # define FORK_TAKEN "has taken a fork"
 # define DIED "died"
 
+# define SLEEPING "is sleeping"
+# define EATING "is eating"
+# define THINKING "is thinking"
+
 typedef struct s_fork
 {
 	pthread_mutex_t	mutex;
@@ -57,6 +61,7 @@ typedef struct s_phil
 	long long		last_meal_time;
 	int				meals_consumed;
 	pthread_t		thread;
+	struct s_table	*sim;
 }					t_phil;
 
 typedef struct s_table
@@ -85,5 +90,39 @@ t_table				*init_table(int ac, char **av);
 
 // monitor;
 void				*monitor_routine(void *arg);
+
+// forks
+
+void init_forks(t_table *sim);
+void take_forks(t_table *sim, int philo_id);
+void	put_forks(t_table *sim, int philo_id);
+
+// philosophers
+
+void create_philosophers(t_table *sim);
+void join_philosophers(t_table *sim);
+
+// monitor
+
+void init_monitor(t_table *sim);
+
+// cleanup
+
+void destroy_table(t_table *sim);
+
+
+#ifdef DEBUG
+#define DEBUG_PIPE "/tmp/philo_debug_pipe"
+#define DEBUG_PRINT(...) do { \
+    FILE *debug_pipe = fopen(DEBUG_PIPE, "a"); \
+    if (debug_pipe) { \
+        fprintf(debug_pipe, __VA_ARGS__); \
+        fclose(debug_pipe); \
+    } \
+} while (0)
+#else
+#define DEBUG_PRINT(...) do {} while (0)
+#endif
+
 
 #endif // PHILO_H
