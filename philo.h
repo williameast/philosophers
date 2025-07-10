@@ -37,7 +37,7 @@
 
 // bools
 # define TRUE 1
-# define FALSE 1
+# define FALSE 0
 
 // CPU clock delay amount
 # define CPU_DELAY_TIME 1000
@@ -71,6 +71,7 @@ typedef struct s_table
 	long long		time_to_eat;
 	long long		time_to_sleep;
 	int				min_meals;
+	long long		start_time;
 	t_fork			*forks;
 	t_phil			*philosophers;
 	pthread_mutex_t	print_lock;
@@ -83,6 +84,7 @@ long long			ft_atoll(const char *str);
 int					ft_atoi(const char *str);
 
 long long			get_time(void);
+long long			get_relative_time(t_table *sim);
 void				print_status(t_table *sim, int philo_id, char *status);
 
 // init functions
@@ -112,13 +114,10 @@ void destroy_table(t_table *sim);
 
 
 #ifdef DEBUG
-#define DEBUG_PIPE "/tmp/philo_debug_pipe"
 #define DEBUG_PRINT(...) do { \
-    FILE *debug_pipe = fopen(DEBUG_PIPE, "a"); \
-    if (debug_pipe) { \
-        fprintf(debug_pipe, __VA_ARGS__); \
-        fclose(debug_pipe); \
-    } \
+    printf("[DEBUG] "); \
+    printf(__VA_ARGS__); \
+    fflush(stdout); \
 } while (0)
 #else
 #define DEBUG_PRINT(...) do {} while (0)

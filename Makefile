@@ -46,9 +46,7 @@ all: $(NAME)
 # Debug build
 dev: CFLAGS += $(DEBUG_FLAGS)
 dev: re
-	@if [ ! -p $(DEBUG_PIPE) ]; then mkfifo $(DEBUG_PIPE); fi
-	@echo "Debug pipe created at $(DEBUG_PIPE)"
-	@echo "To view debug output, run 'cat $(DEBUG_PIPE)' in another terminal"
+	@echo "Debug build complete - debug output will be printed to stdout"
 
 # Create obj directory
 $(OBJ_DIR):

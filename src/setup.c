@@ -31,8 +31,8 @@ static void	init_philosophers(t_table *sim)
 	while (i < sim->num_philosophers)
 	{
 		phil = &sim->philosophers[i];
-		phil->id = i + 1;
-		phil->last_meal_time = get_time();
+		phil->id = i;
+		phil->last_meal_time = 0;
 		phil->meals_consumed = 0;
 		i++;
 	}
@@ -65,6 +65,7 @@ t_table	*init_table(int ac, char **av)
 	}
 	pthread_mutex_init(&sim->meal_lock, NULL);
 	pthread_mutex_init(&sim->print_lock, NULL);
+	sim->start_time = get_time();
 	init_philosophers(sim);
 	sim->stop_simulation = FALSE;
 	return (sim);
