@@ -6,7 +6,7 @@
 #    By: weast <weast@student.42berlin.de>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 12:26:33 by weast             #+#    #+#              #
-#    Updated: 2025/07/02 12:45:25 by weast            ###   ########.fr        #
+#    Updated: 2025/07/10 10:41:23 by weast            ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 # Program file name
@@ -14,7 +14,7 @@ NAME	= philo
 
 # Compiler and compilation flags
 CC		= cc
-CFLAGS	= -Werror -Wextra -Wall -pthread -I.
+CFLAGS	= -Werror -Wextra -Wall -pthread -I. -g
 DEBUG_FLAGS = -g -DDEBUG
 DEBUG_PIPE = /tmp/philo_debug_pipe
 

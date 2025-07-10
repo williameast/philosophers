@@ -6,14 +6,24 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 19:36:24 by William           #+#    #+#             */
-/*   Updated: 2025/07/02 12:29:22 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/10 13:59:54 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/* void	print_status(t_table *sim, int philo_id, char *status) */
+/* { */
+/* 	pthread_mutex_lock(&sim->print_lock); */
+/* 	if (!sim->stop_simulation) */
+/* 		printf("%lld %d %s\n", get_relative_time(sim), philo_id + 1, status); */
+/* 	pthread_mutex_unlock(&sim->print_lock); */
+/* } */
+
+
 void	print_status(t_table *sim, int philo_id, char *status)
 {
+	get_mutex_value(pthread_mutex_t *mutex, int *variable)
 	pthread_mutex_lock(&sim->print_lock);
 	if (!sim->stop_simulation)
 		printf("%lld %d %s\n", get_relative_time(sim), philo_id + 1, status);

@@ -6,7 +6,7 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 19:37:08 by William           #+#    #+#             */
-/*   Updated: 2025/07/02 12:46:25 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/10 14:59:55 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef PHILO_H
@@ -50,10 +50,26 @@
 # define EATING "is eating"
 # define THINKING "is thinking"
 
+typedef struct s_kvp
+{
+	int	value;
+	pthread_mutex_t lock;
+} t_kvp;
+
 typedef struct s_fork
 {
-	pthread_mutex_t	mutex;
+	t_kvp	available;
 }					t_fork;
+
+typedef struct s_settings
+{
+	int				num_philosophers;
+	long long		time_to_die;
+	long long		time_to_eat;
+	long long		time_to_sleep;
+	int				max_meals;
+	long long		start_time;
+} t_settings;
 
 typedef struct s_phil
 {
@@ -66,23 +82,19 @@ typedef struct s_phil
 
 typedef struct s_table
 {
-	int				num_philosophers;
-	long long		time_to_die;
-	long long		time_to_eat;
-	long long		time_to_sleep;
-	int				min_meals;
-	long long		start_time;
 	t_fork			*forks;
 	t_phil			*philosophers;
-	pthread_mutex_t	print_lock;
-	pthread_mutex_t	meal_lock;
-	int				stop_simulation;
+	t_kvp			print_lock;
+	t_kvp			sim_ended;
+	t_settings		settings;
 }					t_table;
 
 // atox.c, functions for parsing input.
 long long			ft_atoll(const char *str);
 int					ft_atoi(const char *str);
 
+
+// utils
 long long			get_time(void);
 long long			get_relative_time(t_table *sim);
 void				print_status(t_table *sim, int philo_id, char *status);
@@ -94,25 +106,30 @@ t_table				*init_table(int ac, char **av);
 void				*monitor_routine(void *arg);
 
 // forks
-
 void init_forks(t_table *sim);
 void take_forks(t_table *sim, int philo_id);
 void	put_forks(t_table *sim, int philo_id);
 
 // philosophers
-
 void create_philosophers(t_table *sim);
 void join_philosophers(t_table *sim);
 
 // monitor
-
 void init_monitor(t_table *sim);
 
 // cleanup
-
 void destroy_table(t_table *sim);
 
+// lock handling
 
+int 	set_mutex_value(pthread_mutex_t *mutex, int *variable, int value);
+int 	get_mutex_value(pthread_mutex_t *mutex, int *variable);
+void	init_mutex(pthread_mutex_t *mutex);
+void	destroy_mutex(pthread_mutex_t *mutex);
+
+
+
+// flag for debugging
 #ifdef DEBUG
 #define DEBUG_PRINT(...) do { \
     printf("[DEBUG] "); \
