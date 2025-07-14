@@ -6,32 +6,48 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 14:28:51 by weast             #+#    #+#             */
-/*   Updated: 2025/07/10 15:10:11 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/11 16:31:44 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../philo.h"
 
+/* create new key value pair, including a mutex lock. needs to be initialized
+ * before it can be used. querying it should be safe!  */
+// kvp.c
 
-void	init_kvp(t_kvp *kvp)
+t_kvp	*kvp_init(long long value)
 {
-	init_mutex(&kvp->lock);
+	t_kvp	*kvp;
+
+	kvp = malloc(sizeof(t_kvp));
+	if (!kvp)
+		return (NULL);
+	kvp->value = value;
+	pthread_mutex_init(&kvp->lock, NULL);
+	return (kvp);
 }
 
-// TODO handle the case where a lock fails?
-void	set_kvp(t_kvp *kvp, int value)
+void	kvp_destroy(t_kvp *kvp)
 {
-	int res;
-    res = set_mutex_value(&kvp->lock, &kvp->value, value);
-	if (res == -1)
-		DEBUG_PRINT("value could not be set.\n");
+	if (!kvp)
+		return ;
+	pthread_mutex_destroy(&kvp->lock);
+	free(kvp);
 }
 
-int		get_kvp(t_kvp *kvp)
+long long	kvp_get(t_kvp *kvp)
 {
-	int res;
+	int	val;
 
-	res = get_mutex_value(&kvp->lock, &kvp->value);
-	if (res == -1)
-		DEBUG_PRINT("value could not be set.\n");
-	return res;
+	pthread_mutex_lock(&kvp->lock);
+	val = kvp->value;
+	pthread_mutex_unlock(&kvp->lock);
+	return (val);
+}
+
+void	kvp_set(t_kvp *kvp, long long value)
+{
+	pthread_mutex_lock(&kvp->lock);
+	kvp->value = value;
+	pthread_mutex_unlock(&kvp->lock);
 }

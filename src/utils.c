@@ -6,28 +6,19 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 19:36:24 by William           #+#    #+#             */
-/*   Updated: 2025/07/10 13:59:54 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/12 00:59:19 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
-
-/* void	print_status(t_table *sim, int philo_id, char *status) */
-/* { */
-/* 	pthread_mutex_lock(&sim->print_lock); */
-/* 	if (!sim->stop_simulation) */
-/* 		printf("%lld %d %s\n", get_relative_time(sim), philo_id + 1, status); */
-/* 	pthread_mutex_unlock(&sim->print_lock); */
-/* } */
+#include "../philo.h"
 
 
-void	print_status(t_table *sim, int philo_id, char *status)
+void log_state(t_table *table, int philo_id, char *msg)
 {
-	get_mutex_value(pthread_mutex_t *mutex, int *variable)
-	pthread_mutex_lock(&sim->print_lock);
-	if (!sim->stop_simulation)
-		printf("%lld %d %s\n", get_relative_time(sim), philo_id + 1, status);
-	pthread_mutex_unlock(&sim->print_lock);
+	pthread_mutex_lock(&table->print_lock);
+	if (!kvp_get(&table->sim_ended))
+		printf("%lld %d %s\n", get_relative_time(table), philo_id + 1, msg);
+	pthread_mutex_unlock(&table->print_lock);
 }
 
 long long	get_time(void)
@@ -40,5 +31,19 @@ long long	get_time(void)
 
 long long	get_relative_time(t_table *sim)
 {
-	return get_time() - sim->start_time;
+	return get_time() - sim->time_of_init;
+}
+
+
+int	validate_input(t_table *table, int ac)
+{
+	return (table->phil_count <= MIN_PHILOSOPHERS
+		|| table->phil_count > MAX_PHILOSOPHERS
+		|| table->settings.time_to_die <= MIN_DIE
+		|| table->settings.time_to_die > MAX_DIE
+		|| table->settings.time_to_eat <= MIN_EAT
+		|| table->settings.time_to_eat > MAX_EAT
+		|| table->settings.time_to_sleep <= MIN_SLEEP
+		|| table->settings.time_to_sleep > MAX_SLEEP || (ac == 6
+			&& table->settings.max_meals <= MIN_MEALS));
 }

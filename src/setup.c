@@ -6,67 +6,94 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 10:58:19 by William           #+#    #+#             */
-/*   Updated: 2025/07/02 12:23:02 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/12 00:58:35 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../philo.h"
 
-int	validate_input(t_table *sim, int ac)
+
+static void	init_fork_array(t_table *table)
 {
-	return (sim->num_philosophers <= MIN_PHILOSOPHERS
-		|| sim->num_philosophers > MAX_PHILOSOPHERS
-		|| sim->time_to_die <= MIN_DIE || sim->time_to_die > MAX_DIE
-		|| sim->time_to_eat <= MIN_EAT || sim->time_to_eat > MAX_EAT
-		|| sim->time_to_sleep <= MIN_SLEEP || sim->time_to_sleep > MAX_SLEEP
-		|| (ac == 6 && sim->min_meals <= MIN_MEALS));
-}
+	int	i;
 
-static void	init_philosophers(t_table *sim)
-{
-	int		i;
-	t_phil	*phil;
-
-	i = 0;
-	while (i < sim->num_philosophers)
+	table->forks = malloc(sizeof(t_fork) * table->phil_count);
+	if (!table->forks)
+		return ;
+	while (i < table->phil_count)
 	{
-		phil = &sim->philosophers[i];
-		phil->id = i;
-		phil->last_meal_time = 0;
-		phil->meals_consumed = 0;
+		fork_init(&table->forks[i]);
 		i++;
 	}
 }
 
+static void	init_thread_array(t_table *table)
+{
+	pthread_t	*threads;
+	int			i;
+
+	threads = malloc(sizeof(pthread_t) * table->phil_count);
+	if (!threads)
+		return ;
+	i = 0;
+	while (i < table->phil_count)
+	{
+		if (pthread_create(&threads[i], NULL, philosopher_routine,
+				&table->phils[i]) != 0)
+			return ;
+		i++;
+	}
+	while (i < table->phil_count)
+	{
+		pthread_join(threads[i], NULL);
+		i++;
+	}
+}
+
+static void	init_phil_array(t_table *table)
+{
+	int	i;
+
+	table->phils = malloc(sizeof(t_phil) * table->phil_count);
+	if (!table->phils)
+	{
+		free(table->forks);
+		free(table);
+		return ;
+	}
+	i = 0;
+	while (i < table->phil_count)
+	{
+		table->phils[i].last_meal_time = kvp_init(table->time_of_init);
+		table->phils[i].id = i + 1;
+		table->phils[i].meals_consumed = 0;
+		table->phils[i].left = &table->forks[i];
+		table->phils[i].right = &table->forks[(i + 1) % table->phil_count];
+		i++;
+	}
+}
 
 t_table	*init_table(int ac, char **av)
 {
-	t_table	*sim;
+	t_table	*table;
+	int		i;
 
-	sim = malloc(sizeof(t_table));
-	if (!sim)
+	table = malloc(sizeof(t_table));
+	if (!table)
 		return (NULL);
-	sim->num_philosophers = ft_atoi(av[1]);
-	sim->time_to_die = ft_atoll(av[2]);
-	sim->time_to_eat = ft_atoll(av[3]);
-	sim->time_to_sleep = ft_atoll(av[4]);
+	table->phil_count = ft_atoi(av[1]);
+	table->settings.time_to_die = ft_atoll(av[2]);
+	table->settings.time_to_eat = ft_atoll(av[3]);
+	table->settings.time_to_sleep = ft_atoll(av[4]);
 	if (ac == 6)
-		sim->min_meals = ft_atoi(av[5]);
+		table->settings.max_meals = ft_atoi(av[5]);
 	else
-		sim->min_meals = -1;
-	if (validate_input(sim, ac))
+		table->settings.max_meals = -1;
+	if (validate_input(table, ac))
 		return (NULL);
-	sim->forks = malloc(sizeof(t_fork) * sim->num_philosophers);
-	sim->philosophers = malloc(sizeof(t_phil) * sim->num_philosophers);
-	if (!sim->forks || !sim->philosophers)
-	{
-		destroy_table(sim);
-		return (NULL);
-	}
-	pthread_mutex_init(&sim->meal_lock, NULL);
-	pthread_mutex_init(&sim->print_lock, NULL);
-	sim->start_time = get_time();
-	init_philosophers(sim);
-	sim->stop_simulation = FALSE;
-	return (sim);
+	table->time_of_init = get_time();
+	init_fork_array(table);
+	init_phil_array(table);
+	init_thread_array(table);
+	return (table);
 }
