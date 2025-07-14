@@ -6,17 +6,15 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 12:40:36 by William           #+#    #+#             */
-/*   Updated: 2025/07/12 01:02:38 by William          ###   ########.fr       */
+/*   Updated: 2025/07/14 15:30:15 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
 
-void	death(t_table *table)
-{
-
-
-}
-
 void	cleanup(t_table *table)
+{
+	(void) table;
+	printf("pretending to clean up.....\n");
+}

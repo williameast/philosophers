@@ -6,14 +6,10 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 14:28:51 by weast             #+#    #+#             */
-/*   Updated: 2025/07/11 16:31:44 by William          ###   ########.fr       */
+/*   Updated: 2025/07/14 14:10:46 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../philo.h"
-
-/* create new key value pair, including a mutex lock. needs to be initialized
- * before it can be used. querying it should be safe!  */
-// kvp.c
 
 t_kvp	*kvp_init(long long value)
 {
@@ -23,7 +19,11 @@ t_kvp	*kvp_init(long long value)
 	if (!kvp)
 		return (NULL);
 	kvp->value = value;
-	pthread_mutex_init(&kvp->lock, NULL);
+	if (pthread_mutex_init(&kvp->lock, NULL))
+	{
+		printf(ERR_MUTEX);
+		return (NULL);
+	}
 	return (kvp);
 }
 

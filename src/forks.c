@@ -6,7 +6,7 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:12:34 by William           #+#    #+#             */
-/*   Updated: 2025/07/11 14:57:59 by William          ###   ########.fr       */
+/*   Updated: 2025/07/14 13:12:13 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../philo.h"
@@ -16,6 +16,7 @@ int	fork_init(t_fork *fork)
 	fork->available = kvp_init(TRUE);
 	return (1);
 }
+
 void	fork_destroy(t_fork *fork)
 {
 	if (!fork)

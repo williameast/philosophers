@@ -6,7 +6,7 @@
 #    By: weast <weast@student.42berlin.de>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 12:26:33 by weast             #+#    #+#              #
-#    Updated: 2025/07/10 10:41:23 by weast            ###   ########.fr        #
+#    Updated: 2025/07/14 13:12:45 by weast            ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 # Program file name
@@ -28,6 +28,7 @@ SRC		= 	main.c \
 			cleanup.c \
 			forks.c \
 			monitor.c \
+			kvp.c \
 			philosophers.c \
 			setup.c \
 			utils.c

@@ -6,19 +6,18 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 19:36:24 by William           #+#    #+#             */
-/*   Updated: 2025/07/12 00:59:19 by William          ###   ########.fr       */
+/*   Updated: 2025/07/14 16:48:29 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
 
-void log_state(t_table *table, int philo_id, char *msg)
+void log_state(t_table *table, int phil_id, char *msg)
 {
-	pthread_mutex_lock(&table->print_lock);
-	if (!kvp_get(&table->sim_ended))
-		printf("%lld %d %s\n", get_relative_time(table), philo_id + 1, msg);
-	pthread_mutex_unlock(&table->print_lock);
+    long long current_time = get_time() - table->time_of_init;
+    printf("%lld %d %s\n", current_time, phil_id, msg);
+    fflush(stdout);  // Ensure output is printed immediately
 }
 
 long long	get_time(void)

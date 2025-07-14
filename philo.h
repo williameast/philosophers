@@ -6,13 +6,12 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 19:37:08 by William           #+#    #+#             */
-/*   Updated: 2025/07/12 00:58:59 by William          ###   ########.fr       */
+/*   Updated: 2025/07/14 15:33:25 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef PHILO_H
 # define PHILO_H
 
-# include <bits/pthreadtypes.h>
 # include <limits.h>
 # include <pthread.h>
 # include <stdio.h>
@@ -51,6 +50,10 @@
 # define EATING "is eating"
 # define THINKING "is thinking"
 
+# define ERR_MUTEX "could not initialized mutex"
+
+# define DEBUG_PHIL "Philosopher %d starting. Left fork: %p, Right fork: %p\n"
+
 typedef struct s_kvp
 {
 	long long		value;
@@ -76,8 +79,10 @@ typedef struct s_table
 	struct s_phil	*phils;
 	int				phil_count;
 	pthread_mutex_t	print_lock;
-	t_kvp			sim_ended;
+	t_kvp			*sim_ended;
 	t_settings		settings;
+	pthread_t		*threads;
+	pthread_t		monitor_thread;
 	long long		time_of_init;
 }					t_table;
 
@@ -85,7 +90,7 @@ typedef struct s_phil
 {
 	int				id;
 	t_kvp			*last_meal_time;
-	int				meals_consumed;
+	t_kvp			*meals_consumed;
 	t_fork			*left;
 	t_fork			*right;
 	t_table			*table;
@@ -119,8 +124,19 @@ void				kvp_destroy(t_kvp *kvp);
 
 void				*philosopher_routine(void *arg);
 
+// monitor
+void *monitor_routine(void *arg);
+int	init_monitor();
+void init_thread_array();
+
 // utils
 void				log_state(t_table *table, int philo_id, char *msg);
 int					validate_input(t_table *table, int ac);
 
+
+void join_philosopher_threads(t_table *table);
+void init_thread_array(t_table *table);
+
+
+void	cleanup();
 #endif // PHILO_H
