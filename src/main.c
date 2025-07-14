@@ -6,7 +6,7 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 12:43:24 by William           #+#    #+#             */
-/*   Updated: 2025/07/14 15:32:33 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/14 17:11:12 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,11 @@ int main(int ac, char **av)
     // Create philosopher threads
     init_thread_array(table);
 
+    // Now join the monitor thread
+    pthread_join(table->monitor_thread, NULL);
     // Join philosopher threads
     join_philosopher_threads(table);
 
-    // Now join the monitor thread
-    printf("Joining monitor thread...\n");
-    pthread_join(table->monitor_thread, NULL);
-    printf("Monitor thread joined\n");
 
     // Clean up
     cleanup(table);

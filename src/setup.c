@@ -6,7 +6,7 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 10:58:19 by William           #+#    #+#             */
-/*   Updated: 2025/07/14 16:46:45 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/14 17:09:34 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,10 @@ static void	init_phil_array(t_table *table)
 		table->phils[i].id = i + 1;
 		table->phils[i].meals_consumed = kvp_init(0);
 		table->phils[i].left = &table->forks[i];
-		table->phils[i].right = &table->forks[(i + 1) % table->phil_count];
+		if (i == table->phil_count - 1)
+			table->phils[i].right = table->phils[0].left;
+		else
+			table->phils[i].right = &table->forks[(i + 1) % table->phil_count];
 		table->phils[i].table = table;
 		i++;
 	}

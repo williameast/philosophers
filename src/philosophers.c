@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 11:59:09 by weast             #+#    #+#             */
-/*   Updated: 2025/07/14 16:50:01 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/14 17:06:33 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,9 @@ void *philosopher_routine(void *arg)
 	t_table *table = phil->table;
 
     printf("Philosopher %d starting\n", phil->id);
+
+	if (phil->id % 2)
+		thinking(table, phil);
 
 	while (!kvp_get(table->sim_ended))
 	{
