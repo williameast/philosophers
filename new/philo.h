@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 15:05:30 by weast             #+#    #+#             */
-/*   Updated: 2025/07/16 15:59:28 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/16 16:36:58 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ typedef enum e_actions
 	DIED,
 	FINISHED,
 } t_action;
-
-# define STR_FINISH "died"
 
 typedef struct s_phil
 {
@@ -69,4 +67,12 @@ void	tick(t_phil *phil, long long stop);
 long long	get_time(void);
 void set_completion_flag(t_phil *phil, int status);
 int	sim_is_running(t_phil *phil);
+
+
+void	print_action(t_phil *phil, int status);
+void	*phil_routine(void *args);
+
+void	init_monitor(t_table *table);
+
+int	ft_atoi(const char *str);
 #endif // PHILO_H
