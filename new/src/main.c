@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 15:08:04 by weast             #+#    #+#             */
-/*   Updated: 2025/07/16 16:52:13 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/16 16:55:16 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,14 +57,14 @@ void	init_philosophers(t_table *table)
 {
 	int	i;
 
-	i = -1;
+	i = 0;
 	table->phil = malloc(sizeof(t_phil) * table->config.philosophers);
 	table->fork = malloc(sizeof(pthread_mutex_t) * table->config.philosophers);
 	if (!table->phil || !table->fork)
 		exit(128);
 		/* exit_error("Couldn't create the philosophers and forks", table, 1); */
 	table->init_time = get_time();
-	while (++i < table->config.philosophers)
+	while (i < table->config.philosophers)
 	{
 		table->phil[i].id = i + 1;
 		table->phil[i].l_fork = i;
@@ -72,6 +72,7 @@ void	init_philosophers(t_table *table)
 		table->phil[i].meal_counter = 0;
 		table->phil[i].last_meal_time = table->init_time;
 		table->phil[i].table = table;
+		i++;
 	}
 }
 
