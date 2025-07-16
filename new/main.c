@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 15:08:04 by weast             #+#    #+#             */
-/*   Updated: 2025/07/16 16:01:01 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/16 16:08:04 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,17 @@ void	eating(t_phil *phil)
 	pthread_mutex_unlock(&phil->table->fork[phil->l_fork]);
 }
 
-void	*start_dinner(void *args)
+
+int	single_philosopher(t_table *table)
+{
+	print_action(&table->phil[0], FORK_TAKEN);
+	tick(&table->phil[0], table->config.time_to_die);
+	print_action(&table->phil[0], DIED);
+	set_completion_flag(&table->phil[0], 1);
+	return (0);
+}
+
+void	*phil_routine(void *args)
 {
 	t_phil	*phil;
 
@@ -74,11 +84,11 @@ void	*start_dinner(void *args)
 		usleep(phil->table->config.time_to_eat * 1000);
 	while (1)
 	{
-		/* if (phil->table->config.philosophers == 1) */
-		/* { */
-		/* 	lone_philosopher(phil->table); */
-		/* 	return (0); */
-		/* } */
+		if (phil->table->config.philosophers == 1)
+		{
+			single_philosopher(phil->table);
+			return (0);
+		}
 		if (sim_is_running(phil))
 			return (0);
 		eating(phil);
@@ -89,15 +99,6 @@ void	*start_dinner(void *args)
 			&& phil->table->config.philosophers <= 127)
 			tick(phil, phil->table->config.time_to_eat);
 	}
-	return (0);
-}
-
-int	lone_philosopher(t_table *table)
-{
-	print_action(&table->philo[0], TAKE);
-	advance_time(&table->philo[0], table->time_to_die);
-	print_action(&table->philo[0], DIE);
-	is_time_to_finish(&table->philo[0], YES);
 	return (0);
 }
 
