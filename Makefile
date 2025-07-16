@@ -6,7 +6,7 @@
 #    By: weast <weast@student.42berlin.de>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 12:26:33 by weast             #+#    #+#              #
-#    Updated: 2025/07/14 13:12:45 by weast            ###   ########.fr        #
+#    Updated: 2025/07/15 19:45:46 by William          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 # Program file name
@@ -15,8 +15,6 @@ NAME	= philo
 # Compiler and compilation flags
 CC		= cc
 CFLAGS	= -Werror -Wextra -Wall -pthread -I. -g
-DEBUG_FLAGS = -g -DDEBUG
-DEBUG_PIPE = /tmp/philo_debug_pipe
 
 # Directories
 SRC_DIR	= src/
@@ -24,14 +22,15 @@ OBJ_DIR	= obj/
 
 # Source files
 SRC		= 	main.c \
-			atoxx.c \
-			cleanup.c \
-			forks.c \
-			monitor.c \
+			init.c \
+			phil_lifecycle.c \
 			kvp.c \
-			philosophers.c \
-			setup.c \
-			utils.c
+			shared_resources.c \
+			simulate.c \
+			io.c \
+			cleanup.c \
+			utils.c \
+
 
 # Object files
 OBJ		= $(SRC:.c=.o)

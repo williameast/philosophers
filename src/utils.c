@@ -5,20 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/09 19:36:24 by William           #+#    #+#             */
-/*   Updated: 2025/07/14 16:48:29 by weast            ###   ########.fr       */
+/*   Created: 2025/07/15 11:57:46 by William           #+#    #+#             */
+/*   Updated: 2025/07/15 18:50:38 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
-
-
-void log_state(t_table *table, int phil_id, char *msg)
-{
-    long long current_time = get_time() - table->time_of_init;
-    printf("%lld %d %s\n", current_time, phil_id, msg);
-    fflush(stdout);  // Ensure output is printed immediately
-}
 
 long long	get_time(void)
 {
@@ -28,21 +20,31 @@ long long	get_time(void)
 	return (time_value.tv_sec * 1000LL) + (time_value.tv_usec / 1000);
 }
 
-long long	get_relative_time(t_table *sim)
+static void print_operation(t_kvp *lock, void *context)
 {
-	return get_time() - sim->time_of_init;
+    (void)lock; // Suppress unused parameter warning
+    t_phil *phil = (t_phil *)context;
+	char *msg;
+
+	if (phil->state == EATING)
+		msg = "is eating";
+	else if (phil->state == SLEEPING)
+		msg = "is sleeping";
+	else if (phil->state == THINKING)
+		msg = "is thinking";
+	else if (phil->state == DYING)
+		msg = "died";
+	else
+		msg = "ERR UNKNOWN";
+
+    // Construct and print the log message
+    printf("%lld philosopher %d %s\n",
+           get_time() - phil->table->init_time,
+           phil->id + 1,
+		   msg);
 }
 
-
-int	validate_input(t_table *table, int ac)
+void log_action(t_kvp *print_lock, t_phil *phil)
 {
-	return (table->phil_count <= MIN_PHILOSOPHERS
-		|| table->phil_count > MAX_PHILOSOPHERS
-		|| table->settings.time_to_die <= MIN_DIE
-		|| table->settings.time_to_die > MAX_DIE
-		|| table->settings.time_to_eat <= MIN_EAT
-		|| table->settings.time_to_eat > MAX_EAT
-		|| table->settings.time_to_sleep <= MIN_SLEEP
-		|| table->settings.time_to_sleep > MAX_SLEEP || (ac == 6
-			&& table->settings.max_meals <= MIN_MEALS));
+    kvp_access(print_lock, print_operation, (void *)phil);
 }

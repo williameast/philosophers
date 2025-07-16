@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/09 19:37:08 by William           #+#    #+#             */
-/*   Updated: 2025/07/14 15:33:25 by weast            ###   ########.fr       */
+/*   Created: 2025/07/15 13:26:00 by William           #+#    #+#             */
+/*   Updated: 2025/07/16 10:36:29 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -23,7 +24,7 @@
 # define MAX_PHILOSOPHERS 300
 # define MIN_PHILOSOPHERS 0
 
-# define MAX_DIE 9999
+# define MAX_DIE 1000
 # define MIN_DIE 0
 
 # define MAX_EAT 9999
@@ -32,28 +33,18 @@
 # define MAX_SLEEP 9999
 # define MIN_SLEEP 0
 
-# define MAX_MEALS 9999
+# define MAX_MEALS 10
 # define MIN_MEALS 0
 
 // bools
 # define TRUE 1
 # define FALSE 0
 
-// CPU clock delay amount
-# define CPU_DELAY_TIME 1000
-
 // str consts;
 # define FORK_TAKEN "has taken a fork"
 # define DIED "died"
 
-# define SLEEPING "is sleeping"
-# define EATING "is eating"
-# define THINKING "is thinking"
-
-# define ERR_MUTEX "could not initialized mutex"
-
-# define DEBUG_PHIL "Philosopher %d starting. Left fork: %p, Right fork: %p\n"
-
+// sharable resource.
 typedef struct s_kvp
 {
 	long long		value;
@@ -62,8 +53,16 @@ typedef struct s_kvp
 
 typedef struct s_fork
 {
-	t_kvp			*available;
+	t_kvp			available;
 }					t_fork;
+
+typedef enum e_phil_state
+{
+	EATING,
+	SLEEPING,
+	THINKING,
+	DYING
+}					t_phil_state;
 
 typedef struct s_settings
 {
@@ -73,70 +72,81 @@ typedef struct s_settings
 	int				max_meals;
 }					t_settings;
 
-typedef struct s_table
-{
-	t_fork			*forks;
-	struct s_phil	*phils;
-	int				phil_count;
-	pthread_mutex_t	print_lock;
-	t_kvp			*sim_ended;
-	t_settings		settings;
-	pthread_t		*threads;
-	pthread_t		monitor_thread;
-	long long		time_of_init;
-}					t_table;
-
+// each phil has their id,
+/* a thread allocated to them and a link to the table they are on. */
 typedef struct s_phil
 {
 	int				id;
-	t_kvp			*last_meal_time;
-	t_kvp			*meals_consumed;
-	t_fork			*left;
-	t_fork			*right;
-	t_table			*table;
+	pthread_t		thread;
+	t_fork			*left_fork;
+	t_fork			*right_fork;
+	struct s_table	*table;
+	int				state;
+	t_kvp			meals_consumed;
+	t_kvp			last_meal_time;
 }					t_phil;
-// atox.c, functions for parsing input.
-long long			ft_atoll(const char *str);
-int					ft_atoi(const char *str);
 
-// utils
+// a table has an array of philosophers, and the start of the sim.
+typedef struct s_table
+{
+	t_phil			*phil;
+	t_fork			*fork;
+	int				num_philosophers;
+	long long		init_time;
+	t_kvp			print_lock;
+	pthread_t		mon_thread;
+	int				death_detected;
+	t_settings		settings;
+}					t_table;
+
+// utils.c
+
 long long			get_time(void);
-long long			get_relative_time(t_table *sim);
 
 // init functions
-t_table				*init_table(int ac, char **av);
+//
+int				init_table(t_table *table, int ac, char **av);
+t_phil				*init_philosopher(t_table *table, int id);
+t_phil				*init_philosophers(t_table *table, t_fork *forks, int num_philosophers);
+t_fork				*init_forks(int num_forks);
+void				distribute_forks(t_phil *philosophers, t_fork *forks, int num_philosophers);
 
+int					launch_philosophers(t_table *table);
+int					launch_philosopher(t_phil *phil);
+int					launch_monitor(t_table *table);
+void				action(t_phil *phil, int delay);
+
+void				log_action(t_kvp *print_lock, t_phil *phil);
+
+void				*phil_lifecycle(void *arg);
+
+void				dying(t_phil *phil);
 // forks
-int					fork_init(t_fork *fork);
+t_fork				*init_fork(void);
+
 void				fork_destroy(t_fork *fork);
 int					fork_is_available(t_fork *fork);
 void				fork_set_available(t_fork *fork);
 void				fork_set_busy(t_fork *fork);
 
+// New fork handling functions for dining philosophers
+int					take_left_fork(t_phil *phil);
+int					take_right_fork(t_phil *phil);
+void				release_left_fork(t_phil *phil);
+void				release_right_fork(t_phil *phil);
+int					take_both_forks(t_phil *phil);
+void				release_both_forks(t_phil *phil);
+
 // kvp handling
 
 long long			kvp_get(t_kvp *kvp);
 void				kvp_set(t_kvp *kvp, long long value);
-t_kvp				*kvp_init(long long value);
+int					kvp_init(t_kvp *kvp, long long value);
 void				kvp_destroy(t_kvp *kvp);
+void				kvp_access(t_kvp *kvp, void (*operation)(t_kvp *, void *),
+						void *context);
 
-// philosophers
+// clean
+void				cleanup(t_table *table);
 
-void				*philosopher_routine(void *arg);
-
-// monitor
-void *monitor_routine(void *arg);
-int	init_monitor();
-void init_thread_array();
-
-// utils
-void				log_state(t_table *table, int philo_id, char *msg);
-int					validate_input(t_table *table, int ac);
-
-
-void join_philosopher_threads(t_table *table);
-void init_thread_array(t_table *table);
-
-
-void	cleanup();
 #endif // PHILO_H

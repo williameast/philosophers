@@ -6,7 +6,7 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 08:43:03 by William           #+#    #+#             */
-/*   Updated: 2025/07/14 16:47:21 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/15 14:49:40 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int init_monitor(t_table *table)
         return (1);
 	}
 	return 0;
+    pthread_cre
 }
 
 void *monitor_routine(void *arg)
