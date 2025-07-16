@@ -6,7 +6,7 @@
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 13:23:38 by William           #+#    #+#             */
-/*   Updated: 2025/07/16 10:37:05 by William          ###   ########.fr       */
+/*   Updated: 2025/07/16 11:44:12 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ static void	eating(t_phil *phil)
 		if (phil->table->death_detected)
 			return;
 	}
-	
 	kvp_set(&phil->last_meal_time, get_time());
 	phil->state = EATING;
 	action(phil, phil->table->settings.time_to_eat);
@@ -56,49 +55,31 @@ void	dying(t_phil *phil)
 	action(phil, 0);
 }
 
+
 void	*phil_lifecycle(void *arg)
 {
 	t_phil	*phil;
 	int		i;
 
-	// Cast the argument back to t_phil type
 	phil = (t_phil *)arg;
+	int max_meals = phil->table->settings.max_meals;
 	i = 0;
+	while ((max_meals == -1 || i < max_meals) && !phil->table->death_detected)
+	{
+		eating(phil);
+		if (phil->table->death_detected)
+			break;
 
-	// If max_meals is -1, run indefinitely
-	if (phil->table->settings.max_meals == -1)
-	{
-		while (!phil->table->death_detected)
-		{
-			eating(phil);
-			if (phil->table->death_detected)
-				break;
-			sleeping(phil);
-			if (phil->table->death_detected)
-				break;
-			thinking(phil);
-			if (phil->table->death_detected)
-				break;
-		}
+		sleeping(phil);
+		if (phil->table->death_detected)
+			break;
+
+		thinking(phil);
+		if (phil->table->death_detected)
+			break;
+
+		if (max_meals != -1)
+			i++; // Only increment if max_meals is not infinite
 	}
-	else
-	{
-		// Run for the specified number of meals
-		while (i < phil->table->settings.max_meals && !phil->table->death_detected)
-		{
-			eating(phil);
-			if (phil->table->death_detected)
-				break;
-			sleeping(phil);
-			if (phil->table->death_detected)
-				break;
-			thinking(phil);
-			if (phil->table->death_detected)
-				break;
-			i++;
-		}
-	}
-	
-	// Exit the thread properly
 	return (NULL);
 }
