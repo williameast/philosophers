@@ -83,7 +83,7 @@ void	init_monitor(t_table *table)
 	continue_flag = 1;
 	while (continue_flag)
 	{
-		i = -1;
+		i = 0;
 		/* table->ate_enough = 0; */
 		while (i < table->config.philosophers)
 		{
