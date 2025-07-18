@@ -6,18 +6,18 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 15:05:30 by weast             #+#    #+#             */
-/*   Updated: 2025/07/16 16:36:58 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/18 11:35:34 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
-#define PHILO_H
+# define PHILO_H
 
-#include <pthread.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <sys/time.h>
-
+# include <pthread.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <sys/time.h>
+# include <unistd.h>
 
 typedef enum e_actions
 {
@@ -27,7 +27,7 @@ typedef enum e_actions
 	THINKING,
 	DIED,
 	FINISHED,
-} t_action;
+}					t_action;
 
 typedef struct s_phil
 {
@@ -38,6 +38,7 @@ typedef struct s_phil
 	long long		last_meal_time;
 	struct s_table	*table;
 	pthread_t		thread;
+	int				done_eating;
 }					t_phil;
 
 typedef struct s_settings
@@ -47,32 +48,37 @@ typedef struct s_settings
 	int				time_to_sleep;
 	int				max_meals;
 	int				philosophers;
-} t_settings;
+}					t_settings;
 
 typedef struct s_table
 {
-	t_phil		*phil;
-	pthread_mutex_t *fork;
-	t_settings	config;
-	int			meals_needed;
-	int			completion_flag;
-	long long	init_time;
-	pthread_mutex_t print_lock;
-	pthread_mutex_t eat_lock;
-	pthread_mutex_t finish_lock;
-} t_table;
+	t_phil			*phil;
+	pthread_mutex_t	*fork;
+	t_settings		config;
+	int				meals_needed;
+	int				completion_flag;
+	long long		init_time;
+	pthread_mutex_t	print_lock;
+	pthread_mutex_t	eat_lock;
+	pthread_mutex_t	finish_lock;
+}					t_table;
 
+void				tick(t_phil *phil, long long stop);
+long long			get_time(void);
+void				set_completion_flag(t_phil *phil, int status);
+int					sim_is_running(t_phil *phil);
 
-void	tick(t_phil *phil, long long stop);
-long long	get_time(void);
-void set_completion_flag(t_phil *phil, int status);
-int	sim_is_running(t_phil *phil);
+void				print_action(t_phil *phil, int status);
+void				*phil_routine(void *args);
 
+void				init_monitor(t_table *table);
 
-void	print_action(t_phil *phil, int status);
-void	*phil_routine(void *args);
+int					ft_atoi(const char *str);
 
-void	init_monitor(t_table *table);
+void				print_special_status(t_phil *phil, int status);
+void				print_normal_status(t_phil *phil, int status);
 
-int	ft_atoi(const char *str);
+void				rejoin_threads(t_table *table);
+void				destroy_locks(t_table *table);
+void				free_table(t_table *table);
 #endif // PHILO_H

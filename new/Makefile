@@ -6,7 +6,7 @@
 #    By: weast <weast@student.42berlin.de>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 12:26:33 by weast             #+#    #+#              #
-#    Updated: 2025/07/16 16:43:54 by weast            ###   ########.fr        #
+#    Updated: 2025/07/17 10:37:12 by William          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 # Program file name
@@ -24,6 +24,7 @@ OBJ_DIR	= obj/
 SRC		= 	main.c \
 			monitor.c \
 			simulation.c \
+			cleanup.c \
 			time.c \
 			utilities.c
 

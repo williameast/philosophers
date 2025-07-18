@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:12:20 by weast             #+#    #+#             */
-/*   Updated: 2025/07/16 16:42:33 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/18 11:34:14 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ static void	eating(t_phil *phil)
 	print_action(phil, FORK_TAKEN);
 	print_action(phil, FORK_TAKEN);
 	print_action(phil, EATING);
+	phil->meal_counter++;
 	tick(phil, phil->table->config.time_to_eat);
 	pthread_mutex_lock(&phil->table->eat_lock);
-	phil->meal_counter++;
 	phil->last_meal_time = get_time();
 	pthread_mutex_unlock(&phil->table->eat_lock);
 	pthread_mutex_unlock(&phil->table->fork[phil->r_fork]);
@@ -40,7 +40,6 @@ static int	single_philosopher(t_table *table)
 {
 	print_action(&table->phil[0], FORK_TAKEN);
 	tick(&table->phil[0], table->config.time_to_die);
-	print_action(&table->phil[0], DIED);
 	set_completion_flag(&table->phil[0], 1);
 	return (0);
 }
@@ -59,8 +58,10 @@ void	*phil_routine(void *args)
 			single_philosopher(phil->table);
 			return (0);
 		}
-		if (sim_is_running(phil))
+		if (!sim_is_running(phil))
+		{
 			return (0);
+		}
 		eating(phil);
 		print_action(phil, SLEEPING);
 		tick(phil, phil->table->config.time_to_sleep);
@@ -70,4 +71,14 @@ void	*phil_routine(void *args)
 			tick(phil, phil->table->config.time_to_eat);
 	}
 	return (0);
+}
+
+void	print_action(t_phil *phil, int status)
+{
+	pthread_mutex_lock(&phil->table->print_lock);
+	if (status == DIED || status == FINISHED)
+		print_special_status(phil, status);
+	else if (sim_is_running(phil))
+		print_normal_status(phil, status);
+	pthread_mutex_unlock(&phil->table->print_lock);
 }
