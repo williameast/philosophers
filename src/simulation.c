@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:12:20 by weast             #+#    #+#             */
-/*   Updated: 2025/07/22 10:50:15 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/22 12:29:51 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,11 @@ static int	single_philosopher(t_table *table)
 void	*phil_routine(void *args)
 {
 	t_phil	*phil;
+	int		time_to_think;
 
 	phil = (t_phil *)args;
+	time_to_think = phil->table->config.time_to_die
+		- (phil->table->config.time_to_eat + phil->table->config.time_to_sleep);
 	if (phil->id % 2 == 0)
 		usleep(phil->table->config.time_to_eat * 1000);
 	while (sim_is_running(phil))
@@ -64,6 +67,7 @@ void	*phil_routine(void *args)
 		print_action(phil, SLEEPING);
 		tick(phil, phil->table->config.time_to_sleep);
 		print_action(phil, THINKING);
+		tick(phil, time_to_think / 2);
 	}
 	return (0);
 }
