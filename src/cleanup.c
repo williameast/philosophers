@@ -5,36 +5,44 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: William <weast@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/15 14:37:48 by William           #+#    #+#             */
-/*   Updated: 2025/07/16 11:37:50 by William          ###   ########.fr       */
+/*   Created: 2025/07/17 10:36:51 by William           #+#    #+#             */
+/*   Updated: 2025/07/17 10:53:15 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
-#include <pthread.h>
 
-
-
-void destroy_fork(t_fork *fork)
+void	free_table(t_table *table)
 {
-	kvp_destroy(&fork->available); // Cleanly destroy the kvp
+	free(table->phil);
+	free(table->fork);
 }
 
-void	cleanup(t_table *table)
+void	destroy_locks(t_table *table)
 {
 	int	i;
 
-	puts("cleaning up");
-
-	for (i = 0; i < table->num_philosophers; i++)
+	i = 0;
+	while (i < table->config.philosophers)
 	{
-		kvp_destroy(&table->phil[i].last_meal_time);
-		kvp_destroy(&table->phil[i].meals_consumed);
+		pthread_mutex_destroy(&table->fork[i]);
+		i++;
 	}
-	free(table->phil);
-	for (i = 0; i < table->num_philosophers; i++)
-		kvp_destroy(&table->fork[i].available);
-	free(table->fork);
-	kvp_destroy(&table->print_lock);
-	free(table);
+	pthread_mutex_destroy(&table->print_lock);
+	pthread_mutex_destroy(&table->eat_lock);
+	pthread_mutex_destroy(&table->finish_lock);
+	free_table(table);
+}
+
+void	rejoin_threads(t_table *table)
+{
+	int	i;
+
+	i = 0;
+	while (i < table->config.philosophers)
+	{
+		pthread_join(table->phil[i].thread, NULL);
+		i++;
+	}
+	destroy_locks(table);
 }

@@ -6,7 +6,7 @@
 #    By: weast <weast@student.42berlin.de>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 12:26:33 by weast             #+#    #+#              #
-#    Updated: 2025/07/15 19:45:46 by William          ###   ########.fr        #
+#    Updated: 2025/07/17 10:37:12 by William          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 # Program file name
@@ -22,15 +22,11 @@ OBJ_DIR	= obj/
 
 # Source files
 SRC		= 	main.c \
-			init.c \
-			phil_lifecycle.c \
-			kvp.c \
-			shared_resources.c \
-			simulate.c \
-			io.c \
+			monitor.c \
+			simulation.c \
 			cleanup.c \
-			utils.c \
-
+			time.c \
+			utilities.c
 
 # Object files
 OBJ		= $(SRC:.c=.o)
