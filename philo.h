@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 15:05:30 by weast             #+#    #+#             */
-/*   Updated: 2025/07/18 11:35:34 by William          ###   ########.fr       */
+/*   Updated: 2025/07/22 10:27:37 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,22 +63,27 @@ typedef struct s_table
 	pthread_mutex_t	finish_lock;
 }					t_table;
 
+/* time controls */
 void				tick(t_phil *phil, long long stop);
 long long			get_time(void);
 void				set_completion_flag(t_phil *phil, int status);
 int					sim_is_running(t_phil *phil);
 
+/* simulation functions */
 void				print_action(t_phil *phil, int status);
 void				*phil_routine(void *args);
 
+/* monitor thread */
 void				init_monitor(t_table *table);
 
+/* utilities and io */
 int					ft_atoi(const char *str);
-
 void				print_special_status(t_phil *phil, int status);
 void				print_normal_status(t_phil *phil, int status);
 
+/* cleanup and error handling */
 void				rejoin_threads(t_table *table);
 void				destroy_locks(t_table *table);
 void				free_table(t_table *table);
+
 #endif // PHILO_H

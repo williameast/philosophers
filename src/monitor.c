@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:14:21 by weast             #+#    #+#             */
-/*   Updated: 2025/07/18 11:35:25 by William          ###   ########.fr       */
+/*   Updated: 2025/07/22 10:26:29 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static int	check_meals(t_phil *phil)
 	return (0);
 }
 
-int	monitor_thread(t_phil *phil)
+static int	monitor_thread(t_phil *phil)
 {
 	pthread_mutex_lock(&phil->table->eat_lock);
 	if (check_death(phil) || check_meals(phil))
