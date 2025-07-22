@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 15:36:01 by weast             #+#    #+#             */
-/*   Updated: 2025/07/18 10:41:01 by William          ###   ########.fr       */
+/*   Updated: 2025/07/22 10:05:03 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,5 +43,5 @@ void	tick(t_phil *phil, long long stop)
 
 	begin = get_time();
 	while (sim_is_running(phil) && (get_time() - begin) < stop)
-		usleep(42);
+		usleep(10);
 }

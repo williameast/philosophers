@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:12:20 by weast             #+#    #+#             */
-/*   Updated: 2025/07/18 11:34:14 by William          ###   ########.fr       */
+/*   Updated: 2025/07/22 10:08:29 by William          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ static void	eating(t_phil *phil)
 	print_action(phil, FORK_TAKEN);
 	print_action(phil, EATING);
 	phil->meal_counter++;
-	tick(phil, phil->table->config.time_to_eat);
 	pthread_mutex_lock(&phil->table->eat_lock);
 	phil->last_meal_time = get_time();
 	pthread_mutex_unlock(&phil->table->eat_lock);
@@ -51,24 +50,17 @@ void	*phil_routine(void *args)
 	phil = (t_phil *)args;
 	if (phil->id % 2 == 0)
 		usleep(phil->table->config.time_to_eat * 1000);
-	while (1)
+	while (sim_is_running(phil))
 	{
 		if (phil->table->config.philosophers == 1)
 		{
 			single_philosopher(phil->table);
 			return (0);
 		}
-		if (!sim_is_running(phil))
-		{
-			return (0);
-		}
 		eating(phil);
 		print_action(phil, SLEEPING);
 		tick(phil, phil->table->config.time_to_sleep);
 		print_action(phil, THINKING);
-		if (phil->table->config.philosophers % 2 != 0
-			&& phil->table->config.philosophers <= 127)
-			tick(phil, phil->table->config.time_to_eat);
 	}
 	return (0);
 }
