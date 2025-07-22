@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 15:08:04 by weast             #+#    #+#             */
-/*   Updated: 2025/07/17 12:08:05 by William          ###   ########.fr       */
+/*   Updated: 2025/07/22 10:49:37 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ int	init_locks(t_table *table)
 	}
 	if (pthread_mutex_init(&table->print_lock, NULL)
 		|| pthread_mutex_init(&table->eat_lock, NULL)
+		|| pthread_mutex_init(&table->meal_count_lock, NULL)
 		|| pthread_mutex_init(&table->finish_lock, NULL))
 	{
 		printf("[ERROR] mutex initialization failiure\n");

@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 15:05:30 by weast             #+#    #+#             */
-/*   Updated: 2025/07/22 10:27:37 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/22 10:53:50 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ typedef struct s_table
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	eat_lock;
 	pthread_mutex_t	finish_lock;
+	pthread_mutex_t	meal_count_lock;
 }					t_table;
 
 /* time controls */

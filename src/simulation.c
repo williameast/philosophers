@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:12:20 by weast             #+#    #+#             */
-/*   Updated: 2025/07/22 10:38:05 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/22 10:50:15 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ static void	eating(t_phil *phil)
 	print_action(phil, FORK_TAKEN);
 	print_action(phil, FORK_TAKEN);
 	print_action(phil, EATING);
+	pthread_mutex_lock(&phil->table->meal_count_lock);
 	phil->meal_counter++;
+	pthread_mutex_unlock(&phil->table->meal_count_lock);
 	tick(phil, phil->table->config.time_to_eat);
 	pthread_mutex_lock(&phil->table->eat_lock);
 	phil->last_meal_time = get_time();
