@@ -6,11 +6,25 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:12:20 by weast             #+#    #+#             */
-/*   Updated: 2025/07/22 12:29:51 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/23 16:12:05 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
+
+static void	update_meal_count(t_phil *phil)
+{
+	pthread_mutex_lock(&phil->table->meal_count_lock);
+	phil->meal_counter++;
+	if (phil->table->config.max_meals > 0
+		&& phil->meal_counter >= phil->table->config.max_meals
+		&& !phil->done_eating)
+	{
+		phil->done_eating = 1;
+		phil->table->meals_needed++;
+	}
+	pthread_mutex_unlock(&phil->table->meal_count_lock);
+}
 
 static void	eating(t_phil *phil)
 {
@@ -27,9 +41,7 @@ static void	eating(t_phil *phil)
 	print_action(phil, FORK_TAKEN);
 	print_action(phil, FORK_TAKEN);
 	print_action(phil, EATING);
-	pthread_mutex_lock(&phil->table->meal_count_lock);
-	phil->meal_counter++;
-	pthread_mutex_unlock(&phil->table->meal_count_lock);
+	update_meal_count(phil);
 	tick(phil, phil->table->config.time_to_eat);
 	pthread_mutex_lock(&phil->table->eat_lock);
 	phil->last_meal_time = get_time();

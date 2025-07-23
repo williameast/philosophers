@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 15:08:04 by weast             #+#    #+#             */
-/*   Updated: 2025/07/22 10:49:37 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/23 16:06:59 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ int	init_table(t_table *table, int ac, char **av)
 		return (-1);
 	}
 	table->completion_flag = 0;
+	table->meals_needed = 0;
 	return (0);
 }
 

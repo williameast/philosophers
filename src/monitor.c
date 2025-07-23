@@ -6,7 +6,7 @@
 /*   By: weast <weast@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:14:21 by weast             #+#    #+#             */
-/*   Updated: 2025/07/22 10:53:03 by weast            ###   ########.fr       */
+/*   Updated: 2025/07/23 16:02:01 by weast            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,13 @@ static int	check_death(t_phil *phil)
 static int	check_meals(t_phil *phil)
 {
 	pthread_mutex_lock(&phil->table->meal_count_lock);
+	if (phil->table->meals_needed >= phil->table->config.philosophers)
+	{
+		set_completion_flag(phil, 1);
+		print_action(phil, FINISHED);
+		pthread_mutex_unlock(&phil->table->meal_count_lock);
+		return (1);
+	}
 	if (phil->table->config.max_meals > 0
 		&& phil->meal_counter >= phil->table->config.max_meals
 		&& !phil->done_eating)
